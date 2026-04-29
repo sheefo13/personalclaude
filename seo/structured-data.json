@@ -1,0 +1,108 @@
+{
+  "_comment": "Add ONE <script type='application/ld+json'> block per page. Google reads this to show rich results (star ratings, price, availability) directly in search. Use the relevant block for each page type.",
+
+  "homepage_organization": {
+    "_use_on": "Every page (global footer or <head>)",
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "The Arab Card Game",
+    "url": "https://www.thearabcardgame.com",
+    "logo": "https://www.thearabcardgame.com/images/logo.png",
+    "sameAs": [
+      "https://www.instagram.com/YOUR_HANDLE",
+      "https://www.tiktok.com/@YOUR_HANDLE",
+      "https://www.facebook.com/YOUR_PAGE",
+      "https://twitter.com/YOUR_HANDLE"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "hello@thearabcardgame.com",
+      "availableLanguage": ["English", "Arabic"]
+    }
+  },
+
+  "product_game_1": {
+    "_use_on": "Product page for Game 1",
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "GAME 1 NAME HERE",
+    "description": "A fun card game celebrating Arab culture and humor. Great for families, game nights, and as a gift for the Arab diaspora.",
+    "image": [
+      "https://www.thearabcardgame.com/images/game1-front.jpg",
+      "https://www.thearabcardgame.com/images/game1-lifestyle.jpg"
+    ],
+    "brand": {
+      "@type": "Brand",
+      "name": "The Arab Card Game"
+    },
+    "sku": "GAME1-STANDARD",
+    "offers": {
+      "@type": "Offer",
+      "url": "https://www.thearabcardgame.com/products/game-1",
+      "priceCurrency": "USD",
+      "price": "XX.00",
+      "availability": "https://schema.org/InStock",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": ["US","CA","GB","AU","AE","SA","EG","JO","LB"]
+        }
+      }
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "NUMBER_OF_REVIEWS"
+    }
+  },
+
+  "faq_page": {
+    "_use_on": "FAQ or product pages — FAQ rich results show directly in Google",
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is The Arab Card Game?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Arab Card Game is a collection of card games made by and for Arabs, celebrating Arab culture, humor, and family life. It is popular among the Arab diaspora in the US, Canada, UK, Australia, and Europe."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you ship internationally?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! We ship worldwide including to the US, Canada, UK, Australia, UAE, Saudi Arabia, Egypt, Jordan, and Lebanon."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the game available in Arabic?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The game features Arabic words, phrases, and cultural references. [Add detail about Arabic vs English instructions here.]"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many players can play?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "[Add player count and age recommendation here.]"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this a good gift for Eid?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. The Arab Card Game is one of the most popular Eid, Ramadan, and Arab family gift ideas. It ships in time for Eid al-Fitr and Eid al-Adha when ordered early."
+        }
+      }
+    ]
+  }
+}
