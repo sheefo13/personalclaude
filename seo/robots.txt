@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Block admin and checkout pages from indexing
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /account/
+Disallow: /orders/
+
+# Allow all crawlers to access images for Google Image Search
+Allow: /images/
+
+# Sitemap location
+Sitemap: https://www.thearabcardgame.com/sitemap.xml

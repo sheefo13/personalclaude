@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.thearabcardgame.com/</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.thearabcardgame.com/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.thearabcardgame.com/ar/"/>
+    <image:image>
+      <image:loc>https://www.thearabcardgame.com/images/arab-card-game-hero.jpg</image:loc>
+      <image:title>The Arab Card Game</image:title>
+      <image:caption>The card game made BY Arabs, FOR Arabs</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Shop / All Products -->
+  <url>
+    <loc>https://www.thearabcardgame.com/shop</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Game 1 Product Page (replace with real URL) -->
+  <url>
+    <loc>https://www.thearabcardgame.com/shop/game-1</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.thearabcardgame.com/images/game-1-box.jpg</image:loc>
+      <image:title>The Arab Card Game - Game 1</image:title>
+    </image:image>
+  </url>
+
+  <!-- Game 2 Product Page (replace with real URL) -->
+  <url>
+    <loc>https://www.thearabcardgame.com/shop/game-2</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.thearabcardgame.com/images/game-2-box.jpg</image:loc>
+      <image:title>The Arab Card Game - Game 2</image:title>
+    </image:image>
+  </url>
+
+  <!-- About Page -->
+  <url>
+    <loc>https://www.thearabcardgame.com/about</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Index -->
+  <url>
+    <loc>https://www.thearabcardgame.com/blog</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog Post Examples (add all posts) -->
+  <url>
+    <loc>https://www.thearabcardgame.com/blog/best-eid-gift-ideas-arab-diaspora</loc>
+    <lastmod>2026-04-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.thearabcardgame.com/blog/arab-party-games-for-adults</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.thearabcardgame.com/blog/gift-ideas-for-arab-american-families</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Arabic versions (if you add /ar/ pages) -->
+  <url>
+    <loc>https://www.thearabcardgame.com/ar/</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.thearabcardgame.com/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.thearabcardgame.com/ar/"/>
+  </url>
+
+</urlset>

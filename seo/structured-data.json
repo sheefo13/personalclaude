@@ -1,0 +1,116 @@
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "The Arab Card Game",
+    "alternateName": ["لعبة الورق العربية", "Arab Card Game"],
+    "description": "The original card game celebrating Arab culture, humor, and identity — perfect for families, friends, and the Arab diaspora worldwide.",
+    "brand": {
+      "@type": "Brand",
+      "name": "The Arab Card Game"
+    },
+    "url": "https://www.thearabcardgame.com",
+    "image": "https://www.thearabcardgame.com/images/arab-card-game-box.jpg",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "url": "https://www.thearabcardgame.com/shop",
+      "seller": {
+        "@type": "Organization",
+        "name": "The Arab Card Game"
+      }
+    },
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Arab diaspora, Arab Americans, Arab Canadians, Arab Australians, Arab Europeans, Middle Eastern families"
+    },
+    "keywords": [
+      "Arab card game",
+      "Arab party game",
+      "Middle Eastern card game",
+      "Arab diaspora gift",
+      "Arab culture game",
+      "funny Arab game",
+      "Arab family game",
+      "لعبة عربية",
+      "هدية عربية",
+      "Arab gift ideas",
+      "Eid gift",
+      "Ramadan gift",
+      "Arab American game",
+      "halal card game"
+    ],
+    "inLanguage": ["en", "ar"],
+    "countryOfOrigin": "US"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "The Arab Card Game",
+    "url": "https://www.thearabcardgame.com",
+    "logo": "https://www.thearabcardgame.com/images/logo.png",
+    "sameAs": [
+      "https://www.instagram.com/thearabcardgame",
+      "https://www.tiktok.com/@thearabcardgame",
+      "https://www.facebook.com/thearabcardgame",
+      "https://twitter.com/thearabcardgame"
+    ],
+    "description": "Creator of card games celebrating Arab culture and identity for the global Arab diaspora.",
+    "foundingLocation": {
+      "@type": "Place",
+      "name": "United States"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "hello@thearabcardgame.com"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is The Arab Card Game?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Arab Card Game is a card game that celebrates Arab culture, humor, and shared experiences — designed for Arabs and their friends everywhere. It's perfect for family gatherings, Eid parties, and anyone who grew up in an Arab household."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is The Arab Card Game appropriate for all ages?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! The Arab Card Game is family-friendly and designed to be played by all ages at gatherings, holidays like Eid and Ramadan, and everyday hangouts."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you ship internationally?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we ship to Arab diaspora communities worldwide including the US, Canada, UK, Australia, Germany, France, and more."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this a good gift for Arabs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. The Arab Card Game is one of the most unique and culturally resonant gifts for Arabs and Arab Americans. It makes a great Eid gift, birthday gift, or housewarming present for Arab families."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many players can play?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Arab Card Game can be played by groups — ideal for 4 or more players, making it perfect for Arab family gatherings and parties."
+        }
+      }
+    ]
+  }
+]
