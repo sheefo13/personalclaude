@@ -28,8 +28,16 @@ export default async function Home() {
             Welcome back, <span className="font-semibold">{username}</span> 👋
           </p>
           <p className="text-gray-500 text-sm mb-8">
-            You&apos;re logged in. The grid game is coming soon.
+            Ready to play today&apos;s grid?
           </p>
+          <div className="flex gap-3 mb-8">
+            <Link
+              href="/play"
+              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-semibold transition-colors"
+            >
+              Play NBA grid
+            </Link>
+          </div>
           <SignOutButton />
         </>
       ) : (
