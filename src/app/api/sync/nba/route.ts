@@ -27,6 +27,18 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
+  // Safe diagnostic: confirms whether env vars are reaching the function
+  // without ever revealing their values.
+  if (new URL(request.url).searchParams.get('debug') === '1') {
+    const key = process.env.BALLDONTLIE_API_KEY ?? ''
+    return NextResponse.json({
+      balldontlieKeyPresent: key.length > 0,
+      balldontlieKeyLength: key.length,
+      isPlaceholder: key === 'your-balldontlie-api-key',
+      serviceRoleKeyPresent: (process.env.SUPABASE_SERVICE_ROLE_KEY ?? '').length > 0,
+    })
+  }
+
   const db = createAdminClient()
 
   // Load (or initialise) where we left off.
