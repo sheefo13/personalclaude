@@ -10,7 +10,8 @@ create table public.sync_state (
 alter table public.sync_state enable row level security;
 -- No public policies: only the service_role key (which bypasses RLS) touches this.
 
--- Needed so the sync can upsert players by their source-API id.
-create unique index players_sport_external_id_idx
-  on public.players (sport, external_id)
-  where external_id is not null;
+-- Needed so the sync can upsert players by their source id.
+-- A plain (non-partial) unique constraint so it can be an ON CONFLICT target.
+-- NULL external_id values remain allowed (Postgres treats NULLs as distinct).
+alter table public.players
+  add constraint players_sport_external_id_key unique (sport, external_id);
