@@ -22,17 +22,26 @@ export default function AuthPage() {
     setLoading(true)
 
     if (mode === 'signup') {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { username } },
       })
       if (error) setError(error.message)
-      else setMessage('Check your email to confirm your account.')
+      else if (data.session) {
+        // Email confirmation is off — user is logged in immediately.
+        router.push('/')
+        router.refresh()
+      } else {
+        setMessage('Check your email to confirm your account.')
+      }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
-      else router.push('/')
+      else {
+        router.push('/')
+        router.refresh()
+      }
     }
     setLoading(false)
   }
