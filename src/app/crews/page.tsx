@@ -22,12 +22,6 @@ export default async function CrewsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth')
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/api/crews/mine`, {
-    headers: { Cookie: '' }, // will be handled server-side via supabase session
-    cache: 'no-store',
-  })
-
-  // Fetch crews directly via supabase instead of internal fetch (avoids cookie issues)
   const { data: memberships } = await supabase
     .from('crew_members')
     .select('crew_id')
