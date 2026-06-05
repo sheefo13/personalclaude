@@ -30,7 +30,7 @@ export default async function Home() {
           <p className="text-gray-500 text-sm mb-8">
             Ready to play today&apos;s grid?
           </p>
-          <div className="flex gap-3 mb-8">
+          <div className="flex flex-wrap gap-3 justify-center mb-8">
             <Link
               href="/play"
               className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-semibold transition-colors"
@@ -39,9 +39,15 @@ export default async function Home() {
             </Link>
             <Link
               href="/crews"
-              className="px-8 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold transition-colors"
+              className="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold transition-colors"
             >
               My Crews
+            </Link>
+            <Link
+              href="/profile"
+              className="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold transition-colors"
+            >
+              Profile
             </Link>
           </div>
           <SignOutButton />

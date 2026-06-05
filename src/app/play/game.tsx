@@ -2,12 +2,22 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { BADGE_MAP } from '@/lib/badges'
 
 interface CellResult {
   correct: true
   playerName: string
   points: number
   rarity: number
+}
+
+interface CompletionResult {
+  streak: number
+  longestStreak: number
+  usedFreeze: boolean
+  newBadges: string[]
+  streakFreezes: number
+  gridsCompleted: number
 }
 
 interface Props {
@@ -67,24 +77,39 @@ export default function Game({ rowTeams, colTeams }: Props) {
   const [flashWrong, setFlashWrong] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [completion, setCompletion] = useState<CompletionResult | null>(null)
   const cellStart = useRef<number>(0)
 
   const score = Object.values(results).reduce((s, r) => s + r.points, 0)
   const filled = Object.keys(results).length
   const guessesUsed = TOTAL_GUESSES - guessesLeft
   const gameOver = guessesLeft <= 0 || filled >= 9
-  const scoreSubmitted = useRef(false)
+  const completionFired = useRef(false)
 
   useEffect(() => {
-    if (gameOver && !scoreSubmitted.current) {
-      scoreSubmitted.current = true
+    if (!gameOver || completionFired.current) return
+    completionFired.current = true
+
+    const cellResults = Object.values(results).map((r) => ({
+      rarity: r.rarity,
+      points: r.points,
+      playerName: r.playerName,
+    }))
+
+    // Fire both endpoints in parallel — crew score + streak/badges.
+    Promise.all([
       fetch('/api/crews/score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ score }),
-      }).catch(() => {})
-    }
-  }, [gameOver, score])
+      }).catch(() => {}),
+      fetch('/api/game/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score, filled, sport: 'nba', cellResults }),
+      }).then((r) => r.json()).then(setCompletion).catch(() => {}),
+    ])
+  }, [gameOver, score, filled, results])
 
   function openCell(r: number, c: number) {
     if (gameOver) return
@@ -271,6 +296,58 @@ export default function Game({ rowTeams, colTeams }: Props) {
               <p className="text-4xl font-bold text-indigo-400 mb-1">{score}</p>
               <p className="text-gray-400 text-sm">{filled} of 9 cells · {guessesUsed} guesses used</p>
             </div>
+
+            {/* Streak */}
+            {completion && (
+              <div className="flex items-center justify-center gap-6 mb-5 bg-gray-800 rounded-xl py-3 px-4">
+                <div className="text-center">
+                  <p className="text-2xl font-bold">
+                    🔥 {completion.streak}
+                  </p>
+                  <p className="text-xs text-gray-400">day streak</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold">{completion.gridsCompleted}</p>
+                  <p className="text-xs text-gray-400">grids played</p>
+                </div>
+                {completion.streakFreezes > 0 && (
+                  <div className="text-center">
+                    <p className="text-2xl font-bold">🧊 {completion.streakFreezes}</p>
+                    <p className="text-xs text-gray-400">freezes</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* New badges earned */}
+            {completion && completion.newBadges.length > 0 && (
+              <div className="mb-5">
+                <p className="text-center text-xs text-yellow-400 uppercase tracking-wider mb-2">
+                  🏅 Badge{completion.newBadges.length > 1 ? 's' : ''} earned!
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {completion.newBadges.map((id) => {
+                    const b = BADGE_MAP[id]
+                    if (!b) return null
+                    return (
+                      <div key={id} className="flex items-center gap-1.5 bg-yellow-900/40 border border-yellow-700 rounded-lg px-3 py-1.5">
+                        <span>{b.emoji}</span>
+                        <div>
+                          <p className="text-xs font-semibold text-yellow-300">{b.name}</p>
+                          <p className="text-[10px] text-gray-400">{b.description}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {completion?.usedFreeze && (
+              <p className="text-center text-blue-400 text-sm mb-4">
+                🧊 Streak freeze used — your streak is protected!
+              </p>
+            )}
 
             {/* Share button */}
             <button
