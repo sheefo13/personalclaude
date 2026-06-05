@@ -73,6 +73,18 @@ export default function Game({ rowTeams, colTeams }: Props) {
   const filled = Object.keys(results).length
   const guessesUsed = TOTAL_GUESSES - guessesLeft
   const gameOver = guessesLeft <= 0 || filled >= 9
+  const scoreSubmitted = useRef(false)
+
+  useEffect(() => {
+    if (gameOver && !scoreSubmitted.current) {
+      scoreSubmitted.current = true
+      fetch('/api/crews/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score }),
+      }).catch(() => {})
+    }
+  }, [gameOver, score])
 
   function openCell(r: number, c: number) {
     if (gameOver) return

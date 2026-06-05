@@ -37,6 +37,12 @@ export default async function Home() {
             >
               Play NBA grid
             </Link>
+            <Link
+              href="/crews"
+              className="px-8 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold transition-colors"
+            >
+              My Crews
+            </Link>
           </div>
           <SignOutButton />
         </>
