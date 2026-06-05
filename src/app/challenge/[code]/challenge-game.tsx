@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { BADGE_MAP } from '@/lib/badges'
-import ChallengeButton from './challenge-button'
 
 interface CellResult {
   correct: true
@@ -12,27 +10,22 @@ interface CellResult {
   rarity: number
 }
 
-interface CompletionResult {
-  streak: number
-  longestStreak: number
-  usedFreeze: boolean
-  newBadges: string[]
-  streakFreezes: number
-  gridsCompleted: number
+interface ChallengeResult {
+  result: 'win' | 'loss' | 'tie'
+  challengerScore: number
+  yourScore: number
+  challengerUsername: string
 }
 
 interface Props {
   rowTeams: string[]
   colTeams: string[]
+  code: string
+  challengerScore: number
+  challengerUsername: string
 }
 
 const TOTAL_GUESSES = 9
-
-function rarityEmoji(rarity: number): string {
-  if (rarity < 35) return '🟦' // obscure — big points
-  if (rarity < 65) return '🟩' // solid pick
-  return '🟨'                  // obvious — everyone named them
-}
 
 function rarityLabel(rarity: number): string {
   if (rarity < 35) return 'Deep cut'
@@ -40,36 +33,7 @@ function rarityLabel(rarity: number): string {
   return 'Obvious'
 }
 
-function buildShareText(
-  rowTeams: string[],
-  colTeams: string[],
-  results: Record<string, CellResult>,
-  score: number,
-  guessesUsed: number
-): string {
-  const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  const filled = Object.keys(results).length
-
-  const rows = rowTeams.map((_, r) =>
-    colTeams.map((__, c) => {
-      const result = results[`${r}-${c}`]
-      return result ? rarityEmoji(result.rarity) : '⬛'
-    }).join('')
-  ).join('\n')
-
-  return [
-    `Gridlore NBA 🏀 · ${date}`,
-    `${colTeams.join(' · ')}`,
-    `${rowTeams.join(' · ')}`,
-    '',
-    rows,
-    '',
-    `Score: ${score} · ${filled}/9 cells · ${guessesUsed} guesses`,
-    'gridlore.vercel.app',
-  ].join('\n')
-}
-
-export default function Game({ rowTeams, colTeams }: Props) {
+export default function ChallengeGame({ rowTeams, colTeams, code, challengerScore, challengerUsername }: Props) {
   const [results, setResults] = useState<Record<string, CellResult>>({})
   const [guessesLeft, setGuessesLeft] = useState(TOTAL_GUESSES)
   const [active, setActive] = useState<{ r: number; c: number } | null>(null)
@@ -77,13 +41,12 @@ export default function Game({ rowTeams, colTeams }: Props) {
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [flashWrong, setFlashWrong] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [completion, setCompletion] = useState<CompletionResult | null>(null)
+  const [challengeResult, setChallengeResult] = useState<ChallengeResult | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const cellStart = useRef<number>(0)
 
   const score = Object.values(results).reduce((s, r) => s + r.points, 0)
   const filled = Object.keys(results).length
-  const guessesUsed = TOTAL_GUESSES - guessesLeft
   const gameOver = guessesLeft <= 0 || filled >= 9
   const completionFired = useRef(false)
 
@@ -91,26 +54,23 @@ export default function Game({ rowTeams, colTeams }: Props) {
     if (!gameOver || completionFired.current) return
     completionFired.current = true
 
-    const cellResults = Object.values(results).map((r) => ({
-      rarity: r.rarity,
-      points: r.points,
-      playerName: r.playerName,
-    }))
-
-    // Fire both endpoints in parallel — crew score + streak/badges.
-    Promise.all([
-      fetch('/api/crews/score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ score }),
-      }).catch(() => {}),
-      fetch('/api/game/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ score, filled, sport: 'nba', cellResults }),
-      }).then((r) => r.json()).then(setCompletion).catch(() => {}),
-    ])
-  }, [gameOver, score, filled, results])
+    fetch(`/api/challenges/${code}/respond`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.alreadyResponded) {
+          setSubmitError('You already responded to this challenge.')
+        } else if (data.result) {
+          setChallengeResult(data)
+        } else {
+          setSubmitError(data.error ?? 'Failed to submit result.')
+        }
+      })
+      .catch(() => setSubmitError('Network error submitting result.'))
+  }, [gameOver, score, code])
 
   function openCell(r: number, c: number) {
     if (gameOver) return
@@ -169,17 +129,11 @@ export default function Game({ rowTeams, colTeams }: Props) {
     setSubmitting(false)
   }
 
-  async function share() {
-    const text = buildShareText(rowTeams, colTeams, results, score, guessesUsed)
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
-    } catch {
-      // Fallback for browsers that block clipboard without interaction
-      prompt('Copy this and share it:', text)
-    }
-  }
+  const resultLabel = challengeResult
+    ? challengeResult.result === 'win' ? '🏆 You WIN!'
+    : challengeResult.result === 'loss' ? '😅 You lose'
+    : '🤝 Tie!'
+    : null
 
   return (
     <main className="min-h-screen bg-gray-950 text-white p-4 flex flex-col items-center">
@@ -188,11 +142,19 @@ export default function Game({ rowTeams, colTeams }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <Link href="/" className="text-gray-400 hover:text-white text-sm">← Home</Link>
-          <h1 className="text-xl font-bold">Gridlore · NBA</h1>
+          <h1 className="text-xl font-bold">Challenge · NBA</h1>
           <div className="text-sm text-right">
             <div>Score: <span className="font-bold text-indigo-400">{score}</span></div>
             <div className="text-gray-400">Guesses: {guessesLeft}</div>
           </div>
+        </div>
+
+        {/* Challenge banner */}
+        <div className="mb-4 bg-indigo-900/40 border border-indigo-700 rounded-xl px-4 py-3 text-sm text-center">
+          <span className="text-gray-300">You&apos;re challenging </span>
+          <span className="font-semibold text-white">{challengerUsername}</span>
+          <span className="text-gray-300"> · they scored </span>
+          <span className="font-bold text-indigo-400">{challengerScore}</span>
         </div>
 
         {/* Grid */}
@@ -250,7 +212,6 @@ export default function Game({ rowTeams, colTeams }: Props) {
         {/* Game over card */}
         {gameOver && (
           <div className="mt-6 bg-gray-900 rounded-2xl p-6">
-
             {/* Result grid preview */}
             <div className="flex flex-col items-center mb-5">
               <p className="text-gray-400 text-xs mb-2 uppercase tracking-wider">Your result</p>
@@ -282,86 +243,35 @@ export default function Game({ rowTeams, colTeams }: Props) {
                   })
                 )}
               </div>
-
-              {/* Legend */}
-              <div className="flex gap-3 text-xs text-gray-400">
-                <span>🟦 Deep cut</span>
-                <span>🟩 Solid</span>
-                <span>🟨 Obvious</span>
-                <span>⬛ Missed</span>
-              </div>
             </div>
 
             {/* Score summary */}
             <div className="text-center mb-5">
               <p className="text-4xl font-bold text-indigo-400 mb-1">{score}</p>
-              <p className="text-gray-400 text-sm">{filled} of 9 cells · {guessesUsed} guesses used</p>
+              <p className="text-gray-400 text-sm">{filled} of 9 cells · {TOTAL_GUESSES - guessesLeft} guesses used</p>
             </div>
 
-            {/* Streak */}
-            {completion && (
-              <div className="flex items-center justify-center gap-6 mb-5 bg-gray-800 rounded-xl py-3 px-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold">
-                    🔥 {completion.streak}
-                  </p>
-                  <p className="text-xs text-gray-400">day streak</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold">{completion.gridsCompleted}</p>
-                  <p className="text-xs text-gray-400">grids played</p>
-                </div>
-                {completion.streakFreezes > 0 && (
-                  <div className="text-center">
-                    <p className="text-2xl font-bold">🧊 {completion.streakFreezes}</p>
-                    <p className="text-xs text-gray-400">freezes</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* New badges earned */}
-            {completion && completion.newBadges.length > 0 && (
-              <div className="mb-5">
-                <p className="text-center text-xs text-yellow-400 uppercase tracking-wider mb-2">
-                  🏅 Badge{completion.newBadges.length > 1 ? 's' : ''} earned!
+            {/* Challenge result */}
+            {challengeResult && (
+              <div className={`rounded-xl p-4 mb-5 text-center ${
+                challengeResult.result === 'win' ? 'bg-green-900/40 border border-green-700' :
+                challengeResult.result === 'loss' ? 'bg-red-900/40 border border-red-700' :
+                'bg-gray-800 border border-gray-700'
+              }`}>
+                <p className="text-2xl font-bold mb-1">{resultLabel}</p>
+                <p className="text-sm text-gray-300">
+                  You scored <span className="font-bold text-white">{challengeResult.yourScore}</span> vs{' '}
+                  <span className="font-bold text-white">{challengeResult.challengerUsername}</span>&apos;s{' '}
+                  <span className="font-bold text-white">{challengeResult.challengerScore}</span>
                 </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {completion.newBadges.map((id) => {
-                    const b = BADGE_MAP[id]
-                    if (!b) return null
-                    return (
-                      <div key={id} className="flex items-center gap-1.5 bg-yellow-900/40 border border-yellow-700 rounded-lg px-3 py-1.5">
-                        <span>{b.emoji}</span>
-                        <div>
-                          <p className="text-xs font-semibold text-yellow-300">{b.name}</p>
-                          <p className="text-[10px] text-gray-400">{b.description}</p>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
               </div>
             )}
 
-            {completion?.usedFreeze && (
-              <p className="text-center text-blue-400 text-sm mb-4">
-                🧊 Streak freeze used — your streak is protected!
-              </p>
+            {submitError && (
+              <div className="rounded-xl p-4 mb-5 bg-red-900/40 border border-red-700 text-center text-sm text-red-300">
+                {submitError}
+              </div>
             )}
-
-            {/* Share button */}
-            <button
-              onClick={share}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl font-semibold transition-colors mb-3"
-            >
-              {copied ? '✓ Copied to clipboard!' : '📋 Share result'}
-            </button>
-
-            {/* Challenge button */}
-            <div className="mb-3">
-              <ChallengeButton score={score} sport="nba" />
-            </div>
 
             <div className="text-center">
               <Link href="/" className="text-gray-400 hover:text-white text-sm">← Back home</Link>
